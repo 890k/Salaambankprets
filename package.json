@@ -1,0 +1,14 @@
+{
+  "name": "salaam-bank-loans",
+  "version": "1.0.0",
+  "description": "Nidaamka Daymaha iyo Maaliyadda Salaam Bank Soomaaliya",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "telegraf": "^4.12.2",
+    "dotenv": "^16.0.3"
+  }
+}
